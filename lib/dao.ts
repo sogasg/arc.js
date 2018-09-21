@@ -1,10 +1,9 @@
 "use strict";
-import BigNumber from "bignumber.js";
 import { AvatarService } from "./avatarService";
 import { Address, fnVoid, Hash } from "./commonTypes";
 import { DecodedLogEntryEvent, IContractWrapper } from "./iContractWrapperBase";
 import { TransactionService, TxGeneratingFunctionOptions } from "./transactionService";
-import { Utils } from "./utils";
+import { Utils, BigNumber } from "./utils";
 import { EntityFetcherFactory, EventFetcherFilterObject, Web3EventService } from "./web3EventService";
 import { DaoCreatorFactory, DaoCreatorWrapper } from "./wrappers/daoCreator";
 import { ForgeOrgConfig, InitialSchemesSetEventResult, SchemesConfig } from "./wrappers/daoCreator";
@@ -78,7 +77,7 @@ export class DAO {
       dao.token = await avatarService.getNativeToken();
       dao.reputation = await avatarService.getNativeReputation();
       const web3 = await Utils.getWeb3();
-      dao.name = web3.toUtf8(await dao.avatar.orgName());
+      dao.name = web3.utils.toUtf8(await dao.avatar.orgName());
     }
 
     return dao;
@@ -203,7 +202,7 @@ export class DAO {
 
       for (const account of addresses) {
         const balance = await this.reputation.reputationOf(account);
-        if (balance.gt(0)) {
+        if (balance.gtn(0)) {
           participants.push({ address: account, reputation: balance });
         }
       }

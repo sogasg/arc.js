@@ -18,8 +18,8 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(100),
         },
         {
           address: accounts[1],
@@ -39,8 +39,8 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(10),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(10),
+          tokens: web3.utils.toWei(100),
         },
       ],
       schemes: [
@@ -81,8 +81,8 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(10),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(10),
+          tokens: web3.utils.toWei(100),
         },
       ],
       schemes: [
@@ -103,18 +103,18 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(10),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(10),
+          tokens: web3.utils.toWei(100),
         },
         {
           address: accounts[1],
-          reputation: web3.toWei(100),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(100),
+          tokens: web3.utils.toWei(100),
         },
         {
           address: accounts[2],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(100),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(100),
         },
       ],
     });
@@ -127,15 +127,15 @@ describe("DAO", () => {
 
     let participantsFound = participants.filter((f: Participant): boolean => f.address === accounts[0]);
     assert.equal(participantsFound.length, 1);
-    assert.equal(participantsFound[0].reputation.toString(10), web3.toWei(10));
+    assert.equal(participantsFound[0].reputation.toString(10), web3.utils.toWei(10));
 
     participantsFound = participants.filter((f: Participant): boolean => f.address === accounts[1]);
     assert.equal(participantsFound.length, 1);
-    assert.equal(participantsFound[0].reputation.toString(10), web3.toWei(100));
+    assert.equal(participantsFound[0].reputation.toString(10), web3.utils.toWei(100));
 
     participantsFound = participants.filter((f: Participant): boolean => f.address === accounts[2]);
     assert.equal(participantsFound.length, 1);
-    assert.equal(participantsFound[0].reputation.toString(10), web3.toWei(1000));
+    assert.equal(participantsFound[0].reputation.toString(10), web3.utils.toWei(1000));
 
     participants = await dao.getParticipants({
       participantAddress: accounts[1],
@@ -144,7 +144,7 @@ describe("DAO", () => {
 
     assert.equal(participants.length, 1);
     assert.equal(participants[0].address, accounts[1]);
-    assert.equal(participants[0].reputation.toString(10), web3.toWei(100));
+    assert.equal(participants[0].reputation.toString(10), web3.utils.toWei(100));
 
     participants = await dao.getParticipants();
 
@@ -159,8 +159,8 @@ describe("DAO", () => {
 
   it("founders have a native token balance", async () => {
     const dao = await getNewDao();
-    const balance = web3.fromWei(await dao.getTokenBalance(accounts[0]));
-    assert(balance.eq(100));
+    const balance = web3.utils.fromWei(await dao.getTokenBalance(accounts[0]));
+    assert(balance.eqn(100));
   });
 
   it("can call getDaos", async () => {
@@ -229,8 +229,8 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(40),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(40),
         },
       ],
       schemes: [
@@ -294,18 +294,18 @@ describe("DAO", () => {
       founders: [
         {
           address: accounts[0],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(40),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(40),
         },
         {
           address: accounts[1],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(40),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(40),
         },
         {
           address: accounts[2],
-          reputation: web3.toWei(1000),
-          tokens: web3.toWei(40),
+          reputation: web3.utils.toWei(1000),
+          tokens: web3.utils.toWei(40),
         },
       ],
     });

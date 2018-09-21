@@ -5,7 +5,7 @@ import {
 import { DAO } from "../lib/dao";
 import { ArcTransactionProposalResult, DecodedLogEntryEvent } from "../lib/iContractWrapperBase";
 import {
-  Utils
+  Utils, BigNumber
 } from "../lib/utils";
 import {
   RedeemEventResult
@@ -78,7 +78,7 @@ describe("ContributionReward scheme", () => {
   it("can get NewContributionProposal event with rewards", async () => {
 
     const result = await proposeReward({
-      nativeTokenReward: web3.toWei(1),
+      nativeTokenReward: web3.utils.toWei(1),
     });
 
     // const proposal = await result.getTxConfirmed();
@@ -99,7 +99,7 @@ describe("ContributionReward scheme", () => {
       schemes: [
         {
           name: "ContributionReward",
-          orgNativeTokenFee: web3.toWei(1),
+          orgNativeTokenFee: web3.utils.toWei(1),
         },
       ],
     });
@@ -110,13 +110,13 @@ describe("ContributionReward scheme", () => {
       ContributionRewardFactory) as ContributionRewardWrapper;
 
     const params = await scheme.getSchemeParameters(localDao.avatar.address);
-    assert.equal(params.orgNativeTokenFee.toString(), web3.toWei(1), "parameter was not persisted");
+    assert.equal(params.orgNativeTokenFee.toString(), web3.utils.toWei(1), "parameter was not persisted");
 
     const currentBalance = await localDao.getTokenBalance(accounts[0]);
 
     await localDao.token.approve(
       {
-        amount: web3.toWei(1),
+        amount: web3.utils.toWei(1),
         owner: accounts[0],
         spender: scheme.address,
       });
@@ -124,17 +124,17 @@ describe("ContributionReward scheme", () => {
      * should not revert
      */
     await proposeReward({
-      reputationChange: web3.toWei(1),
+      reputationChange: web3.utils.toWei(1),
     }, localScheme, localDao);
 
     const newBalance = await localDao.getTokenBalance(accounts[0]);
-    assert(currentBalance.sub(newBalance).toString() === web3.toWei(1), "fee was not extracted");
+    assert(currentBalance.sub(newBalance).toString() === web3.utils.toWei(1), "fee was not extracted");
   });
 
   it("can propose, vote and redeem", async () => {
 
     const proposalResult = await proposeReward({
-      nativeTokenReward: web3.toWei(1),
+      nativeTokenReward: web3.utils.toWei(1),
     });
 
     const proposalId = await proposalResult.getProposalIdFromMinedTx();
@@ -161,13 +161,13 @@ describe("ContributionReward scheme", () => {
     const eventProposalId = await result.getValueFromMinedTx("_proposalId", "RedeemNativeToken");
     const amount = await result.getValueFromMinedTx("_amount", "RedeemNativeToken");
     assert.equal(eventProposalId, proposalId);
-    assert(helpers.fromWei(amount).eq(1));
+    assert(helpers.fromWei(amount).eqn(1));
   });
 
   it("can redeem reputation", async () => {
 
     const proposalResult = await proposeReward({
-      reputationChange: web3.toWei(1),
+      reputationChange: web3.utils.toWei(1),
     });
 
     const proposalId = await proposalResult.getProposalIdFromMinedTx();
@@ -188,13 +188,13 @@ describe("ContributionReward scheme", () => {
     const eventProposalId = await result.getValueFromMinedTx("_proposalId", "RedeemReputation");
     const amount = await result.getValueFromMinedTx("_amount", "RedeemReputation");
     assert.equal(eventProposalId, proposalId);
-    assert(helpers.fromWei(amount).eq(1));
+    assert(helpers.fromWei(amount).eqn(1));
   });
 
   it("can redeem ethers", async () => {
     const ethAmount = 0.000000001;
     const proposalResult = await proposeReward({
-      ethReward: web3.toWei(ethAmount),
+      ethReward: web3.utils.toWei(ethAmount),
     });
 
     const proposalId = await proposalResult.getProposalIdFromMinedTx();
@@ -214,8 +214,8 @@ describe("ContributionReward scheme", () => {
     });
 
     assert.equal(rewards.length, 1);
-    assert(rewards[0].ethAvailableToReward.eq(web3.toWei(ethAmount)),
-      `${rewards[0].ethAvailableToReward} should equal ${web3.toWei(ethAmount)}`);
+    assert(rewards[0].ethAvailableToReward.eq(web3.utils.toWei(new BigNumber(ethAmount))),
+      `${rewards[0].ethAvailableToReward} should equal ${web3.utils.toWei(new BigNumber(ethAmount))}`);
 
     // now try to redeem some native tokens
     const result = await scheme.redeemEther({
@@ -231,13 +231,13 @@ describe("ContributionReward scheme", () => {
 
     assert.equal(beneficiary, account1);
     assert.equal(eventProposalId, proposalId);
-    assert(helpers.fromWei(amount).eq(ethAmount));
+    assert(helpers.fromWei(amount).eqn(ethAmount));
   });
 
   it("can redeem native tokens", async () => {
 
     const proposalResult = await proposeReward({
-      nativeTokenReward: web3.toWei(1),
+      nativeTokenReward: web3.utils.toWei(1),
     });
 
     const proposalId = await proposalResult.getProposalIdFromMinedTx();
@@ -258,7 +258,7 @@ describe("ContributionReward scheme", () => {
     const eventProposalId = await result.getValueFromMinedTx("_proposalId", "RedeemNativeToken");
     const amount = await result.getValueFromMinedTx("_amount", "RedeemNativeToken");
     assert.equal(eventProposalId, proposalId);
-    assert(helpers.fromWei(amount).eq(1));
+    assert(helpers.fromWei(amount).eqn(1));
   });
 
   it("can redeem external tokens", async () => {
@@ -267,7 +267,7 @@ describe("ContributionReward scheme", () => {
 
     const proposalResult = await proposeReward({
       externalToken: externalToken.address,
-      externalTokenReward: web3.toWei(1),
+      externalTokenReward: web3.utils.toWei(1),
     });
 
     const proposalId = await proposalResult.getProposalIdFromMinedTx();
@@ -286,8 +286,8 @@ describe("ContributionReward scheme", () => {
     });
 
     assert.equal(rewards.length, 1);
-    assert(rewards[0].externalTokensAvailableToReward.eq(web3.toWei("1")),
-      `${rewards[0].externalTokensAvailableToReward} should equal ${web3.toWei("1")}`);
+    assert(rewards[0].externalTokensAvailableToReward.eq(web3.utils.toWei(new BigNumber(1))),
+      `${rewards[0].externalTokensAvailableToReward} should equal ${web3.utils.toWei("1")}`);
 
     // now try to redeem some native tokens
     const result = await scheme.redeemExternalToken({
@@ -300,7 +300,7 @@ describe("ContributionReward scheme", () => {
     const eventProposalId = await result.getValueFromMinedTx("_proposalId", "RedeemExternalToken");
     const amount = await result.getValueFromMinedTx("_amount", "RedeemExternalToken");
     assert.equal(eventProposalId, proposalId);
-    assert(helpers.fromWei(amount).eq(1));
+    assert(helpers.fromWei(amount).eqn(1));
   });
 
   it("can get proposals", async () => {
@@ -318,11 +318,11 @@ describe("ContributionReward scheme", () => {
         ],
       });
 
-      let result = await proposeReward({ nativeTokenReward: web3.toWei(1) });
+      let result = await proposeReward({ nativeTokenReward: web3.utils.toWei(1) });
 
       const proposalId1 = await result.getProposalIdFromMinedTx();
 
-      result = await proposeReward({ reputationChange: web3.toWei(1) });
+      result = await proposeReward({ reputationChange: web3.utils.toWei(1) });
 
       const proposalId2 = await result.getProposalIdFromMinedTx();
 
@@ -368,11 +368,11 @@ describe("ContributionReward scheme", () => {
 
     await setupDao();
 
-    let result = await proposeReward({ nativeTokenReward: web3.toWei(1) });
+    let result = await proposeReward({ nativeTokenReward: web3.utils.toWei(1) });
 
     const nativeRewardProposalId = await result.getProposalIdFromMinedTx();
 
-    result = await proposeReward({ reputationChange: web3.toWei(1) });
+    result = await proposeReward({ reputationChange: web3.utils.toWei(1) });
 
     const reputationChangeProposalId = await result.getProposalIdFromMinedTx();
 

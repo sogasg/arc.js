@@ -1,5 +1,5 @@
 import { Web3 } from "web3";
-import { ConfigService, DAO, InitializeArcJs } from "../index";
+import { DAO, InitializeArcJs } from "../index";
 
 /* tslint:disable:no-console */
 /* tslint:disable:max-line-length */
@@ -104,8 +104,8 @@ export class GenesisDaoCreator {
     spec.founders = spec.founders.map((f: FounderSpec) => {
       return {
         address: f.address,
-        reputation: this.web3.toWei(f.reputation),
-        tokens: this.web3.toWei(f.tokens),
+        reputation: this.web3.utils.toWei(f.reputation),
+        tokens: this.web3.utils.toWei(f.tokens),
       };
     });
 

@@ -14,23 +14,23 @@ describe("Redeemer", () => {
     const dao = await helpers.forgeDao({
       founders: [{
         address: accounts[0],
-        reputation: web3.toWei(3000),
-        tokens: web3.toWei(3000),
+        reputation: web3.utils.toWei(3000),
+        tokens: web3.utils.toWei(3000),
       },
       {
         address: accounts[1],
-        reputation: web3.toWei(1000),
-        tokens: web3.toWei(1000),
+        reputation: web3.utils.toWei(1000),
+        tokens: web3.utils.toWei(1000),
       },
       {
         address: accounts[2],
-        reputation: web3.toWei(500),
-        tokens: web3.toWei(500),
+        reputation: web3.utils.toWei(500),
+        tokens: web3.utils.toWei(500),
       },
       {
         address: accounts[3],
-        reputation: web3.toWei(500),
-        tokens: web3.toWei(500),
+        reputation: web3.utils.toWei(500),
+        tokens: web3.utils.toWei(500),
       }],
       schemes: [
         { name: "GenesisProtocol" },
@@ -58,13 +58,13 @@ describe("Redeemer", () => {
       avatar: dao.avatar.address,
       beneficiaryAddress: accounts[1],
       description: "A new contribution",
-      ethReward: web3.toWei(ethAmount),
+      ethReward: web3.utils.toWei(ethAmount),
       externalToken: externalToken.address,
-      externalTokenReward: web3.toWei(externalTokenAmount),
-      // nativeTokenReward: web3.toWei(nativeTokenAmount),
+      externalTokenReward: web3.utils.toWei(externalTokenAmount),
+      // nativeTokenReward: web3.utils.toWei(nativeTokenAmount),
       numberOfPeriods: 1,
       periodLength: 0,
-      reputationChange: web3.toWei(repAmount),
+      reputationChange: web3.utils.toWei(repAmount),
     }));
 
     const proposalId = await result.getProposalIdFromMinedTx();
@@ -76,7 +76,7 @@ describe("Redeemer", () => {
     await helpers.vote(result.votingMachine, proposalId, BinaryVoteResult.No, accounts[2]);
     await helpers.vote(result.votingMachine, proposalId, BinaryVoteResult.Yes, accounts[3]);
 
-    await (await gp.stakeWithApproval({ amount: web3.toWei(10), vote: 1, proposalId })).getTxMined();
+    await (await gp.stakeWithApproval({ amount: web3.utils.toWei(10), vote: 1, proposalId })).getTxMined();
 
     await helpers.vote(result.votingMachine, proposalId, BinaryVoteResult.Yes, accounts[1]);
 
@@ -106,11 +106,11 @@ describe("Redeemer", () => {
     assert.equal(redeemable.contributionRewardNativeToken, false);
     assert.equal(redeemable.contributionRewardExternalToken, true);
     assert.equal(redeemable.contributionRewardReputation, true);
-    assert.equal(web3.fromWei(redeemable.stakerTokenAmount).toNumber(), 5);
-    assert.equal(web3.fromWei(redeemable.stakerReputationAmount).toNumber(), 1);
-    assert.equal(web3.fromWei(redeemable.daoStakingBountyPotentialReward).toNumber(), 7.5);
-    assert.equal(web3.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
-    assert.equal(web3.fromWei(redeemable.proposerReputationAmount).toNumber(), 15);
+    assert.equal(web3.utils.fromWei(redeemable.stakerTokenAmount).toNumber(), 5);
+    assert.equal(web3.utils.fromWei(redeemable.stakerReputationAmount).toNumber(), 1);
+    assert.equal(web3.utils.fromWei(redeemable.daoStakingBountyPotentialReward).toNumber(), 7.5);
+    assert.equal(web3.utils.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.proposerReputationAmount).toNumber(), 15);
 
     /**
      * winning boosted voter
@@ -127,10 +127,10 @@ describe("Redeemer", () => {
     assert.equal(redeemable.contributionRewardNativeToken, false);
     assert.equal(redeemable.contributionRewardExternalToken, true);
     assert.equal(redeemable.contributionRewardReputation, true);
-    assert.equal(web3.fromWei(redeemable.stakerTokenAmount).toNumber(), 0);
-    assert.equal(web3.fromWei(redeemable.stakerReputationAmount).toNumber(), 0);
-    assert.equal(web3.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
-    assert.equal(web3.fromWei(redeemable.voterTokenAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.stakerTokenAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.stakerReputationAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.voterTokenAmount).toNumber(), 0);
 
     /**
      * losing preboosted voter
@@ -147,8 +147,8 @@ describe("Redeemer", () => {
     assert.equal(redeemable.contributionRewardNativeToken, false);
     assert.equal(redeemable.contributionRewardExternalToken, true);
     assert.equal(redeemable.contributionRewardReputation, true);
-    assert.equal(web3.fromWei(redeemable.voterTokenAmount).toNumber(), 2.5);
-    assert.equal(web3.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
+    assert.equal(web3.utils.fromWei(redeemable.voterTokenAmount).toNumber(), 2.5);
+    assert.equal(web3.utils.fromWei(redeemable.voterReputationAmount).toNumber(), 0);
 
     /**
      * winning preboosted voter
@@ -165,8 +165,8 @@ describe("Redeemer", () => {
     assert.equal(redeemable.contributionRewardNativeToken, false);
     assert.equal(redeemable.contributionRewardExternalToken, true);
     assert.equal(redeemable.contributionRewardReputation, true);
-    assert.equal(web3.fromWei(redeemable.voterTokenAmount).toNumber(), 2.5);
-    assert.equal(web3.fromWei(redeemable.voterReputationAmount).toNumber(), 7);
+    assert.equal(web3.utils.fromWei(redeemable.voterTokenAmount).toNumber(), 2.5);
+    assert.equal(web3.utils.fromWei(redeemable.voterReputationAmount).toNumber(), 7);
 
     const latestBlock = await UtilsInternal.lastBlock();
 
@@ -185,6 +185,6 @@ describe("Redeemer", () => {
     const events = await fetcher.get();
 
     assert.equal(events.length, 1);
-    assert.equal(web3.fromWei(events[0].args._amount).toNumber(), 5);
+    assert.equal(web3.utils.fromWei(events[0].args._amount).toNumber(), 5);
   });
 });
